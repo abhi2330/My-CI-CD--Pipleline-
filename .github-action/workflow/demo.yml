@@ -1,12 +1,9 @@
-
 name: Shivam CI/CD Pipeline
-
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   run:
     name: Run Application
