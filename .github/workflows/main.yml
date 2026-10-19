@@ -1,0 +1,57 @@
+
+name: Shivam CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run:
+    name: Run Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Greetings
+        run: echo "Hello from Shivam Pal"
+
+      - name: Check Files
+        run: ls -la
+
+  test:
+    name: Test Application
+    runs-on: ubuntu-latest
+    needs: run
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify HTML
+        run: |
+          if [ -f index.html ]; then
+            echo "PASS: index.html found"
+          else
+            echo "FAIL: index.html not found"
+            exit 1
+          fi
+
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        run: |
+          mkdir -p deploy
+          cp index.html deploy/
+          echo "Deployment demo successful!"
+          ls -la deploy/
