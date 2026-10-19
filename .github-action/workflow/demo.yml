@@ -1,44 +1,47 @@
+
 name: Shivam CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  greet:
-    name: Run
+  run:
+    name: Run Application
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Greetings!
+      - name: Greetings
         run: echo "Hello from Shivam Pal"
 
-      - name: Run Application
-        run: |
-          echo "Application is running..."
-          ls -la
+      - name: Check Files
+        run: ls -la
 
   test:
-    name: Test
+    name: Test Application
     runs-on: ubuntu-latest
-    needs: greet
+    needs: run
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Run Tests
+      - name: Verify HTML
         run: |
-          echo "Running tests..."
-          test -f index.html
-          echo "All tests passed!"
+          if [ -f index.html ]; then
+            echo "PASS: index.html found"
+          else
+            echo "FAIL: index.html not found"
+            exit 1
+          fi
 
   deploy:
-    name: Deploy
+    name: Deploy Application
     runs-on: ubuntu-latest
     needs: test
 
@@ -46,12 +49,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Deploy Application
+      - name: Deploy
         run: |
-          echo "Deploying application..."
           mkdir -p deploy
           cp index.html deploy/
-          echo "Deployment completed successfully!"
-
-      - name: Show Result
-        run: echo "CI/CD pipeline completed for Shivam Pal!"
+          echo "Deployment demo successful!"
+          ls -la deploy/
